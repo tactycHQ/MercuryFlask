@@ -1,0 +1,41 @@
+version: '3.2'
+
+services:
+
+  tf-serving-server:
+    container_name: tfcont_compose
+    image: tensorflow/serving:1.14.0-rc0-devel
+    volumes:
+      - type: bind
+        source: C:/Users/anubhav/Desktop/Projects/Mercury3/saved_models/
+        target: /models/mercury
+    environment:
+      MODEL_NAMEL: mercury
+    command: tensorflow_model_server --port=8500 --rest_api_port=8501 --model_name=mercury --model_base_path=/models/mercury
+    networks:
+      - mercury_net
+    ports:
+      - "8501:8501"
+
+  flask-client:
+    container_name: flaskcont_compose
+    image: mercuryflask:latest
+    networks:
+      - mercury_net
+    ports:
+      - "5000:5000"
+#    environment:
+#      - TF_SERVER_NAME=tf-serving-server
+#      - TF_SERVER_PORT=8501
+#      - FLASK_SERVER_NAME=0.0.0.0
+#      - FLASK_SERVER_PORT=5000
+#      - FLASK_DEBUG=1
+    entrypoint: python3
+    command: app.py
+    depends_on:
+      - tf-serving-server
+
+networks:
+  mercury_net:
+  #  tf_serving:
+  #    driver: bridge
