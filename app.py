@@ -23,8 +23,8 @@ def load():
     payload={
         "instances":[{'dense_input':toPredict_list}]
     }
-    #response = requests.post('http://localhost:8501/v1/models/mercury:predict', json=payload)
-    response = requests.post('http://tf-serving-server:8501/v1/models/mercury:predict',json = payload)
+    response = requests.post('http://localhost:8501/v1/models/mercury:predict', json=payload)
+    # response = requests.post('http://tf-serving-server:8501/v1/models/mercury:predict',json = payload)
     predictions = response.json()['predictions'][0]
     return jsonify(predictions)
 
